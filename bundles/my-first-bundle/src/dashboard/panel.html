@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<style>
+		.monospace {
+			font-family: monospace;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			padding: 20px;
+			background: #f5f5f5;
+		}
+
+		.control-section {
+			background: white;
+			padding: 20px;
+			margin-bottom: 20px;
+			border-radius: 8px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
+		.control-section h3 {
+			margin-top: 0;
+			color: #333;
+			border-bottom: 2px solid #007acc;
+			padding-bottom: 10px;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		label {
+			display: block;
+			margin-bottom: 5px;
+			font-weight: bold;
+			color: #555;
+		}
+
+		input[type="text"] {
+			width: 100%;
+			padding: 10px;
+			border: 2px solid #ddd;
+			border-radius: 4px;
+			font-size: 14px;
+			box-sizing: border-box;
+		}
+
+		input[type="text"]:focus {
+			border-color: #007acc;
+			outline: none;
+		}
+
+		button {
+			background: #007acc;
+			color: white;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			font-size: 14px;
+			margin-right: 10px;
+		}
+
+		button:hover {
+			background: #005a9e;
+		}
+
+		.toggle-btn {
+			background: #28a745;
+		}
+
+		.toggle-btn:hover {
+			background: #218838;
+		}
+
+		.toggle-btn.hide {
+			background: #dc3545;
+		}
+
+		.toggle-btn.hide:hover {
+			background: #c82333;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="control-section">
+		<h3>Puhuja-asetukset</h3>
+
+		<form id="speakerForm">
+			<div class="form-group">
+				<label for="speaker">Puhujan nimi</label>
+				<input type="text" id="speaker" placeholder="Esim. Maija Mehiläinen" />
+			</div>
+
+			<div class="form-group">
+				<label for="speakerTitle">Puhujan title</label>
+				<input type="text" id="speakerTitle" placeholder="Esim. Ohjelmistokehittäjä" />
+			</div>
+
+			<button type="submit"> Päivitä tiedot</button>
+		</form>
+	</div>
+
+	<div class="control-section">
+		<h3>Näkyvyys</h3>
+		<button id="toggleVisibility" class="toggle-btn">Näytä Lower Third</button>
+	</div>
+
+	<script>
+		// Replicants
+		const speakerRep = nodecg.Replicant("speakerReplicant");
+		const speakerTitleRep = nodecg.Replicant("speakerTitleReplicant");
+		const visibilityRep = nodecg.Replicant("lowerThirdVisible");
+
+		// DOM elements
+		const speaker = document.getElementById("speaker");
+		const speakerTitle = document.getElementById("speakerTitle");
+		const speakerForm = document.getElementById("speakerForm");
+		const toggleBtn = document.getElementById("toggleVisibility");
+
+		// Update form fields when replicants change
+		speakerRep.on("change", (newValue, oldValue) => {
+			console.log(`Speaker changed from ${oldValue} to ${newValue}`);
+			speaker.value = newValue;
+		});
+
+		speakerTitleRep.on("change", (newValue, oldValue) => {
+			console.log(`Speaker title changed from ${oldValue} to ${newValue}`);
+			speakerTitle.value = newValue;
+		});
+
+		visibilityRep.on("change", (newValue, oldValue) => {
+			console.log(`Visibility changed from ${oldValue} to ${newValue}`);
+			updateToggleButton(newValue);
+		});
+
+		// Form submission
+		speakerForm.addEventListener("submit", (e) => {
+			e.preventDefault();
+			speakerRep.value = speaker.value;
+			speakerTitleRep.value = speakerTitle.value;
+		});
+
+		// Toggle visibility
+		toggleBtn.addEventListener("click", () => {
+			visibilityRep.value = !visibilityRep.value;
+		});
+
+		// Update toggle button appearance
+		function updateToggleButton(isVisible) {
+			if (isVisible) {
+				toggleBtn.textContent = " Piilota Lower Third";
+				toggleBtn.classList.add("hide");
+			} else {
+				toggleBtn.textContent = " Näytä Lower Third";
+				toggleBtn.classList.remove("hide");
+			}
+		}
+	</script>
+
+	<div id="root"></div>
+	<script type="module" src="./panel.ts"></script>
+</body>
+
+</html>

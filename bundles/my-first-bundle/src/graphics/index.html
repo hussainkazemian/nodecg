@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<style>
+		body {
+			font-family: 'Arial', sans-serif;
+			margin: 0;
+			padding: 0;
+			background: transparent;
+			overflow: hidden;
+		}
+
+		.lower-third {
+			position: absolute;
+			bottom: 80px;
+			left: 50px;
+			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+			color: white;
+			padding: 20px 30px;
+			border-radius: 10px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+			transform: translateX(-100%);
+			transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+			max-width: 400px;
+		}
+
+		.lower-third.visible {
+			transform: translateX(0);
+		}
+
+		.speaker-name {
+			font-size: 24px;
+			font-weight: bold;
+			margin: 0;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+			animation: fadeInUp 0.6s ease-out 0.3s both;
+		}
+
+		.speaker-title {
+			font-size: 16px;
+			margin: 5px 0 0 0;
+			opacity: 0.9;
+			text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+			animation: fadeInUp 0.6s ease-out 0.5s both;
+		}
+
+		.accent-line {
+			height: 3px;
+			background: rgba(255, 255, 255, 0.8);
+			margin: 10px 0 5px 0;
+			border-radius: 2px;
+			width: 0;
+			transition: width 0.8s ease-out 0.7s;
+		}
+
+		.lower-third.visible .accent-line {
+			width: 100%;
+		}
+
+		@keyframes fadeInUp {
+			from {
+				opacity: 0;
+				transform: translateY(20px);
+			}
+
+			to {
+				opacity: 1;
+				transform: translateY(0);
+			}
+		}
+
+		.monospace {
+			font-family: monospace;
+		}
+	</style>
+	<script type="module" src="./index.ts"></script>
+</head>
+
+<body>
+	<div class="lower-third" id="lowerThird">
+		<div class="accent-line"></div>
+		<h2 class="speaker-name" id="speakerName">Faija Mehiläinen</h2>
+		<p class="speaker-title" id="speakerTitle">Ohjelmistokehittäjä</p>
+	</div>
+</body>
+<script>
+	// Replicants
+	const speakerRep = nodecg.Replicant("speakerReplicant");
+	const speakerTitleRep = nodecg.Replicant("speakerTitleReplicant");
+	const visibilityRep = nodecg.Replicant("lowerThirdVisible");
+
+	// DOM elements
+	const lowerThird = document.getElementById("lowerThird");
+	const speakerName = document.getElementById("speakerName");
+	const speakerTitle = document.getElementById("speakerTitle");
+
+	// Event listeners
+	speakerRep.on("change", (newValue, oldValue) => {
+		console.log(`Speaker changed from ${oldValue} to ${newValue}`);
+		speakerName.innerHTML = newValue;
+	});
+
+	speakerTitleRep.on("change", (newValue, oldValue) => {
+		console.log(`Speaker title changed from ${oldValue} to ${newValue}`);
+		speakerTitle.innerHTML = newValue;
+	});
+
+	visibilityRep.on("change", (newValue, oldValue) => {
+		console.log(`Visibility changed from ${oldValue} to ${newValue}`);
+		if (newValue) {
+			lowerThird.classList.add("visible");
+		} else {
+			lowerThird.classList.remove("visible");
+		}
+	});
+</script>
+
+</html>

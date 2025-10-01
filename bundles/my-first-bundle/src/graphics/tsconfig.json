@@ -1,0 +1,14 @@
+{
+	"extends": "../../tsconfig.build.json",
+	"compilerOptions": {
+		"types": [
+			"@types/soundjs"
+		]
+	},
+	"include": [
+		"**/*.tsx",
+		"**/*.ts",
+		"../types/**/*.ts",
+		"../../node_modules/@nodecg/types/types/augment-window.d.ts"
+	]
+}
